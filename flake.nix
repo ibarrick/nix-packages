@@ -1,7 +1,7 @@
 {
   description = "ibarrick Nix Packages";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05"; 
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; 
 
   outputs = { self, nixpkgs }: {
     packages.x86_64-linux = 
