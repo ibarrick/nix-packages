@@ -176,6 +176,8 @@ nnoremap <silent><Leader><Leader>w :HopWord<CR>
     });
 
       ghostpdl = import ./ghostpdl { stdenv = pkgs.stdenv; };
+      
+      cdk8s = import ./cdk8s { inherit pkgs; stdenv = pkgs.stdenv; };
     };
 
   };
