@@ -178,6 +178,8 @@ nnoremap <silent><Leader><Leader>w :HopWord<CR>
       ghostpdl = import ./ghostpdl { stdenv = pkgs.stdenv; };
       
       cdk8s = import ./cdk8s { inherit pkgs; stdenv = pkgs.stdenv; };
+
+      usql = import ./usql { lib = pkgs.lib; fetchFromGitHub = pkgs.fetchFromGitHub; buildGoModule = pkgs.buildGoModule; unixODBC = pkgs.unixODBC; icu = pkgs.icu; };
     };
 
   };
