@@ -122,6 +122,8 @@ require("bufferline").setup{
 require("hop").setup{
 
 }
+
+require('nvim-magic').setup()
 EOF
 nnoremap <silent><Leader><Leader>l :BufferLineCycleNext<CR>
 nnoremap <silent><Leader><Leader>h :BufferLineCyclePrev<CR>
@@ -159,6 +161,15 @@ nnoremap <silent><Leader><Leader>w :HopWord<CR>
             owner = "joukevandermaas";
             rev = "c47e1958a6c190c9d79ac66cb812f1a1d3b4e968";
             sha256 = "0asxn18j65fihzwdpjbpcnqr6klwk5dr5v9lzw9imjj50ia40ah3";
+          };
+        })
+        plenary-nvim nui-nvim (pkgs.vimUtils.buildVimPlugin {
+          name = "nvim-magic";
+          src = pkgs.fetchFromGitHub {
+            repo = "nvim-magic";
+            owner = "jameshiew";
+            rev = "778ad035534278e5b3b5e31983af7d1e04f557a0";
+            sha256 = "sha256-ZLHs9/ArppvJ6EYra6m4X75cr7pw/dr8HalxWdQL67w=";
           };
         })
 #        (pkgs.vimUtils.buildVimPlugin {
