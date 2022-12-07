@@ -123,7 +123,14 @@ require("hop").setup{
 
 }
 
-require('nvim-magic').setup()
+require('nvim-magic').setup({
+    backends = {
+        default = require('nvim-magic-openai').new({
+            api_endpoint = 'https://api.openai.com/v1/engines/text-davinci-003/completions',
+        }),
+    },
+    use_default_keymap = true
+})
 EOF
 nnoremap <silent><Leader><Leader>l :BufferLineCycleNext<CR>
 nnoremap <silent><Leader><Leader>h :BufferLineCyclePrev<CR>
