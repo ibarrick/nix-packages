@@ -39,6 +39,7 @@ nnoremap <silent> <C-y> :FloatermToggle build<CR>
 tnoremap <C-y> <C-\><C-n>:FloatermToggle build<CR>
 set nocompatible
 filetype plugin on
+let g:clojure_maxlines = 1200
 let g:pencil#map#suspend_af = 'K'
 let g:goyo_width = 110
 let g:pencil#textwidth = 100    
