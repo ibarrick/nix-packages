@@ -37,6 +37,8 @@ nnoremap <silent> <C-b> :Buffers<CR>
 nnoremap <silent> <Leader>gg :LazyGit<CR>
 nnoremap <silent> <C-y> :FloatermToggle build<CR>
 tnoremap <C-y> <C-\><C-n>:FloatermToggle build<CR>
+vnoremap <silent> <Leader>e :<C-u>ChatGPTEditWithInstructions<CR>
+nnoremap <silent> <Leader>e :ChatGPT<CR>
 set nocompatible
 filetype plugin on
 let g:clojure_maxlines = 1200
@@ -124,6 +126,22 @@ require("hop").setup{
 
 }
 
+require('chatgpt').setup({
+    keymaps = {
+        accept = "<C-k>",
+    },
+    edit_with_instructions = {
+        keymaps = {
+            accept = "<C-k>",
+            use_output_as_input = "<C-l>"
+        }
+    },
+    chat = {
+        keymaps = {
+            accept = "<C-k>",
+        }
+    }
+})
 require('nvim-magic').setup({
     backends = {
         default = require('nvim-magic-openai').new({
@@ -142,7 +160,8 @@ nnoremap <silent><Leader><Leader>w :HopWord<CR>
         start = [ vim-nix hop-nvim fzf-vim vim-pencil goyo vim-markdown vimwiki vim-gnupg conjure coc-nvim vim-airline vim-fugitive vim-sexp 
         vim-clojure-static vim-visual-multi vim-floaterm
         vim-jsx-pretty coc-snippets vim-gitgutter nerdtree lazygit-nvim vim-code-dark coc-clap coc-tsserver coc-go
-        vim-devicons bufferline-nvim vim-jsdoc vim-clap coc-flutter vim-surround vim-commentary vim-terraform
+        vim-devicons bufferline-nvim vim-jsdoc vim-clap coc-flutter vim-surround vim-commentary vim-terraform ChatGPT-nvim
+        telescope-nvim
         (nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
 #        (pkgs.vimUtils.buildVimPlugin {
 #          name = "coc-snippets";
