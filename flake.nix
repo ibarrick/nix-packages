@@ -159,7 +159,7 @@ nnoremap <silent><Leader><Leader>w :HopWord<CR>
       packages.myVimPackage = with pkgs.vimPlugins; {
         start = [ vim-nix hop-nvim fzf-vim vim-pencil goyo vim-markdown vimwiki vim-gnupg conjure coc-nvim vim-airline vim-fugitive vim-sexp 
         vim-clojure-static vim-visual-multi vim-floaterm
-        vim-jsx-pretty coc-snippets vim-gitgutter nerdtree lazygit-nvim vim-code-dark coc-clap coc-tsserver coc-go
+        vim-jsx-pretty coc-snippets vim-gitgutter nerdtree lazygit-nvim vim-code-dark coc-clap coc-tsserver coc-go coc-pyright
         vim-devicons bufferline-nvim vim-jsdoc vim-clap coc-flutter vim-surround vim-commentary vim-terraform ChatGPT-nvim
         telescope-nvim
         (nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
