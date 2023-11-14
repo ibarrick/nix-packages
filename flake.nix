@@ -18,6 +18,7 @@ syntax on
 set tabstop=4
 set shiftwidth=4
 set encoding=UTF-8
+set updatetime=300
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
 autocmd BufWritePre *.clj %s/\s\+$//e
