@@ -6,7 +6,7 @@
   outputs = { self, nixpkgs }: {
     packages.x86_64-linux = 
     let
-      pkgs = import nixpkgs { system = "x86_64-linux"; };
+      pkgs = import nixpkgs { system = "x86_64-linux"; config = { allowUnfree = true; }; };
     in
     {
       hello = nixpkgs.legacyPackages.x86_64-linux.hello;
@@ -162,7 +162,7 @@ nnoremap <silent><Leader><Leader>w :HopWord<CR>
         vim-clojure-static vim-visual-multi vim-floaterm
         vim-jsx-pretty coc-snippets vim-gitgutter nerdtree lazygit-nvim vim-code-dark coc-clap coc-tsserver coc-go coc-pyright coc-rust-analyzer coc-clangd
         vim-devicons bufferline-nvim vim-jsdoc vim-clap coc-flutter vim-surround vim-commentary vim-terraform ChatGPT-nvim
-        telescope-nvim
+        telescope-nvim cheatsheet-nvim
         (nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
 #        (pkgs.vimUtils.buildVimPlugin {
 #          name = "coc-snippets";
@@ -221,6 +221,8 @@ nnoremap <silent><Leader><Leader>w :HopWord<CR>
       cdk8s = import ./cdk8s { inherit pkgs; stdenv = pkgs.stdenv; };
 
       usql = import ./usql { lib = pkgs.lib; fetchFromGitHub = pkgs.fetchFromGitHub; buildGoModule = pkgs.buildGoModule; unixODBC = pkgs.unixODBC; icu = pkgs.icu; };
+
+      anytype = import ./anytype { lib = pkgs.lib; fetchurl = pkgs.fetchurl; appimageTools = pkgs.appimageTools; makeWrapper = pkgs.makeWrapper; };
     };
 
   };
