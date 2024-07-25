@@ -183,7 +183,7 @@ nnoremap <silent><Leader><Leader>w :HopWord<CR>
         vim-clojure-static vim-visual-multi vim-floaterm
         vim-jsx-pretty coc-snippets vim-gitgutter nerdtree lazygit-nvim vim-code-dark coc-clap coc-tsserver coc-go coc-pyright coc-rust-analyzer coc-clangd
         vim-devicons bufferline-nvim vim-jsdoc vim-clap coc-flutter vim-surround vim-commentary vim-terraform ChatGPT-nvim
-        telescope-nvim cheatsheet-nvim
+        telescope-nvim cheatsheet-nvim nvim-treesitter-context
         (nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
 #        (pkgs.vimUtils.buildVimPlugin {
 #          name = "coc-snippets";
