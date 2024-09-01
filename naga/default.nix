@@ -1,34 +1,64 @@
 # This imports the nix package collection,
 # so we can access the `pkgs` and `stdenv` variables
-{ stdenv, pkgs, ...}:
-with pkgs;
-# Make a new "derivation" that represents our shell
-stdenv.mkDerivation {
-  name = "naga-keybindings";
+with import <nixpkgs> {};
 
-  src = fetchFromGitHub {
-	owner = "ibarrick";
-	repo = "Razer_Mouse_Linux";
-	rev = "97804f4f35bacc9c4b0b7d833d36652db8cd928b";
-	sha256 = "sha256-WRT77qbsKRiI+MnO0KasQqVg4o6UXSck1SqVWKhSu4I=";
-  };
+stdenv.mkDerivation rec {
+  pname = "razer-naga-key-modifier";
+  version = "0.1.0";
 
-  buildInputs = [gcc9 xdotool];
-  nativeBuildInputs = [ xdotool makeWrapper ];
-  propagatedNativeBuildInputs = [xdotool];
-  propagatedBuildInputs = [ xdotool ];
+  src = ./.;  # Use the current directory as the source
+
+  buildInputs = [ wtype ];
+  nativeBuildInputs = [ wtype makeWrapper ];
+  propagatedNativeBuildInputs = [wtype];
+  propagatedBuildInputs = [ wtype ];
+
 
   buildPhase = ''
-	g++ -pthread -Ofast --std=c++2a src/naga.cpp -o naga
+    $CC -o naga src/naga.c
   '';
 
   installPhase = ''
-	mkdir -p $out/lib/udev/rules.d
-	echo 'KERNEL=="event[0-9]*",SUBSYSTEM=="input",GROUP="razer",MODE="640"' > $out/lib/udev/rules.d/80-naga.rules
-	mkdir -p $out/bin
-	mv naga $out/bin/
-	chmod +x $out/bin/naga
-	makeWrapper ${xdotool}/bin/xdotool $out/bin/xdotool 
+    mkdir -p $out/bin
+    cp naga $out/bin/
+ 	makeWrapper ${wtype}/bin/wtype $out/bin/wtype 
+
   '';
 
+  meta = with lib; {
+    description = "A key modifier for Razer Naga V2 Pro that simulates Windows key presses";
+    license = licenses.mit; # Adjust as necessary
+    platforms = platforms.linux;
+    maintainers = with maintainers; [ ]; # Add maintainers if applicable
+  };
 }
+
+# Version 2 of 2
+# # Make a new "derivation" that represents our shell
+# stdenv.mkDerivation {
+#   name = "naga-keybindings";
+
+#   src = fetchFromGitHub {
+# 	owner = "ibarrick";
+# 	repo = "Razer_Mouse_Linux";
+# 	rev = "46367ced4c6458bb4b2525a512e96251b448b2b7";
+# 	sha256 = "1aqzas6fji4x2i2m4xrgb4k6xaqw173gybs65xvjdpavn8ldfdp7";
+#   };
+
+#   buildInputs = [gcc wtype];
+#   nativeBuildInputs = [ wtype makeWrapper ];
+#   propagatedNativeBuildInputs = [wtype];
+#   propagatedBuildInputs = [ wtype ];
+
+#   buildPhase = ''
+# 	gcc -pthread -Ofast naga.c -o naga
+#   '';
+
+#   installPhase = ''
+# 	mkdir -p $out/bin
+# 	mv naga $out/bin/
+# 	chmod +x $out/bin/naga
+# 	makeWrapper ${xdotool}/bin/wtype $out/bin/wtype 
+#   '';
+
+# }
