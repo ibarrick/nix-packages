@@ -121,9 +121,16 @@ set termguicolors
 lua <<EOF
 require("bufferline").setup{
   options = {
-    separator_style = "slant"
+          separator_style = "", -- thin
+          themable = true
+  },
+  highlights = {
+          fill = { bg = "#000000" },
+          separator = { fg = "#000000" },
+          separator_selected = { fg = "#000000" },
   }
 }
+
 require("hop").setup{
 
 }
