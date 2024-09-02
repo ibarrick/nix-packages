@@ -246,5 +246,7 @@ nnoremap <silent><Leader><Leader>w :HopWord<CR>
       anytype = import ./anytype { lib = pkgs.lib; fetchurl = pkgs.fetchurl; appimageTools = pkgs.appimageTools; makeWrapper = pkgs.makeWrapper; };
     };
 
+    nixosModules.naga = import ./modules/naga.nix;
+
   };
 }
