@@ -1,6 +1,6 @@
 # This imports the nix package collection,
 # so we can access the `pkgs` and `stdenv` variables
-{ lib, stdenv, wtype }:
+{ lib, stdenv, wtype, makeWrapper }:
 
 stdenv.mkDerivation rec {
   pname = "razer-naga-key-modifier";
