@@ -41,6 +41,8 @@ in {
         User = cfg.user;
         Group = cfg.group;
 
+        path = [ cfg.package pkgs.hyprland ];
+
         # Hardening measures
         PrivateTmp = true;
         ProtectSystem = "strict";
