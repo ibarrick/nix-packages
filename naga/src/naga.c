@@ -15,20 +15,20 @@
 const char* get_wtype_key_name(int code) {
 	switch(code) {
         // Numeric keys
-        case KEY_0: return "0";
-        case KEY_1: return "hyprctl dispatch workspace 1";
-        case KEY_2: return "hyprctl dispatch workspace 2";
-        case KEY_3: return "hyprctl dispatch workspace 3";
-        case KEY_4: return "hyprctl dispatch workspace 4";
-        case KEY_5: return "hyprctl dispatch workspace 5";
-        case KEY_6: return "hyprctl dispatch workspace 6";
-        case KEY_7: return "hyprctl dispatch workspace 7";
-        case KEY_8: return "hyprctl dispatch workspace 8";
-        case KEY_9: return "hyprctl dispatch workspace 9";
+        case KEY_0: return "hyprctl dispatch cyclenext";
+        case KEY_1: return "hyprctl dispatch focusworkspaceoncurrentmonitor 1";
+        case KEY_2: return "hyprctl dispatch focusworkspaceoncurrentmonitor 2";
+        case KEY_3: return "hyprctl dispatch focusworkspaceoncurrentmonitor 3";
+        case KEY_4: return "hyprctl dispatch focusworkspaceoncurrentmonitor 4";
+        case KEY_5: return "hyprctl dispatch focusworkspaceoncurrentmonitor 5";
+        case KEY_6: return "hyprctl dispatch focusworkspaceoncurrentmonitor 6";
+        case KEY_7: return "hyprctl dispatch focusworkspaceoncurrentmonitor 7";
+        case KEY_8: return "hyprctl dispatch focusworkspaceoncurrentmonitor 8";
+        case KEY_9: return "hyprctl dispatch focusworkspaceoncurrentmonitor 9";
 
         // Special characters
-        case KEY_MINUS: return "hyprctl dispatch workspace 10";
-        case KEY_EQUAL: return "equal";
+        case KEY_MINUS: return "hyprctl dispatch focusworkspaceoncurrentmonitor 10";
+        case KEY_EQUAL: return "playerctl play-pause";
 		default: return NULL;
 	}
 }
@@ -81,6 +81,8 @@ int main() {
         perror("Failed to open input device");
         return 1;
     }
+
+	ioctl(fd, EVIOCGRAB, 1);// Give application exclusive control over side buttons.
 
     printf("Starting Razer Naga Key Modifier. Logging all key events...\n");
 
