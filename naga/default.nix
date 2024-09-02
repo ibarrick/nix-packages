@@ -3,15 +3,15 @@
 { lib, stdenv, wtype, makeWrapper }:
 
 stdenv.mkDerivation rec {
-  pname = "razer-naga-key-modifier";
+  pname = "naga";
   version = "0.1.0";
 
   src = ./.;  # Use the current directory as the source
 
   buildInputs = [ wtype ];
-  nativeBuildInputs = [ wtype makeWrapper ];
-  propagatedNativeBuildInputs = [wtype];
-  propagatedBuildInputs = [ wtype ];
+  nativeBuildInputs = [ makeWrapper ];
+  # propagatedNativeBuildInputs = [wtype];
+  # propagatedBuildInputs = [ wtype ];
 
 
   buildPhase = ''
@@ -21,9 +21,11 @@ stdenv.mkDerivation rec {
   installPhase = ''
     mkdir -p $out/bin
     cp naga $out/bin/
-    wrapProgram $out/bin/naga \
-      --prefix PATH : ${lib.makeBinPath [ wtype ]}
+  '';
 
+  postInstall = ''
+    wrapProgram $out/bin/naga \
+      --prefix PATH : "${lib.makeBinPath [ wtype ]}"
   '';
 
   meta = with lib; {

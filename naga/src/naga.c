@@ -16,18 +16,18 @@ const char* get_wtype_key_name(int code) {
 	switch(code) {
         // Numeric keys
         case KEY_0: return "0";
-        case KEY_1: return "1";
-        case KEY_2: return "2";
-        case KEY_3: return "3";
-        case KEY_4: return "4";
-        case KEY_5: return "5";
-        case KEY_6: return "6";
-        case KEY_7: return "7";
-        case KEY_8: return "8";
-        case KEY_9: return "9";
+        case KEY_1: return "hyprctl dispatch workspace 1";
+        case KEY_2: return "hyprctl dispatch workspace 2";
+        case KEY_3: return "hyprctl dispatch workspace 3";
+        case KEY_4: return "hyprctl dispatch workspace 4";
+        case KEY_5: return "hyprctl dispatch workspace 5";
+        case KEY_6: return "hyprctl dispatch workspace 6";
+        case KEY_7: return "hyprctl dispatch workspace 7";
+        case KEY_8: return "hyprctl dispatch workspace 8";
+        case KEY_9: return "hyprctl dispatch workspace 9";
 
         // Special characters
-        case KEY_MINUS: return "minus";
+        case KEY_MINUS: return "hyprctl dispatch workspace 10";
         case KEY_EQUAL: return "equal";
 		default: return NULL;
 	}
@@ -65,9 +65,9 @@ void send_key_with_win(int code, int value) {
     }
     
     if (value == 1) { // Key press
-        snprintf(cmd, sizeof(cmd), "wtype -P Super -p %s -r Super", key_name);
+        snprintf(cmd, sizeof(cmd), "%s", key_name);
     } else if (value == 0) { // Key release
-        snprintf(cmd, sizeof(cmd), "wtype -r %s", key_name);
+		return;
     } else {
         return; // Ignore key repeat events
     }
