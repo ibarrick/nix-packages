@@ -21,7 +21,8 @@ stdenv.mkDerivation rec {
   installPhase = ''
     mkdir -p $out/bin
     cp naga $out/bin/
- 	makeWrapper ${wtype}/bin/wtype $out/bin/wtype 
+    wrapProgram $out/bin/naga \
+      --prefix PATH : ${lib.makeBinPath [ wtype ]}
 
   '';
 
