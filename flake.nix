@@ -237,7 +237,7 @@ nnoremap <silent><Leader><Leader>w :HopWord<CR>
 
       ghostpdl = import ./ghostpdl { stdenv = pkgs.stdenv; };
 
-      naga = import ./naga { inherit pkgs; stdenv = pkgs.stdenv; };
+      naga = import ./naga { stdenv = pkgs.stdenv; makeWrapper = pkgs.makeWrapper; lib = pkgs.lib; wtype = pkgs.wtype; };
       
       cdk8s = import ./cdk8s { inherit pkgs; stdenv = pkgs.stdenv; };
 
