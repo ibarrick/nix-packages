@@ -53,6 +53,7 @@ set backspace=indent,eol,start
 set redrawtime=10000
 set splitright
 let g:deoplete#enable_at_startup = 1
+let g:codedark_transparent=1
 colorscheme codedark
 let g:conjure#extract#tree_sitter#enabled = v:true
 let g:sexp_mappings = {
@@ -85,7 +86,6 @@ let g:VM_maps['Find Subword Under'] = '<Leader>n'           " replace visual C-n
 let g:VM_maps["Add Cursor Down"] = '<Leader>j'      " start selecting down
 let g:VM_maps["Add Cursor Up"] = '<Leader>k'      " start selecting down
 let g:airline_powerline_fonts = 1
-let g:codedark_transparent=1
 nmap <silent> <Leader>gd <Plug>(coc-definition)
 nmap <silent> <Leader>gy <Plug>(coc-type-definition)
 nmap <silent> <Leader>gi <Plug>(coc-implementation)
