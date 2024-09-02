@@ -44,17 +44,17 @@ in {
         path = [ cfg.package pkgs.hyprland ];
 
         # Hardening measures
-        PrivateTmp = true;
-        ProtectSystem = "strict";
-        ProtectHome = true;
-        NoNewPrivileges = true;
-        ProtectKernelTunables = true;
-        ProtectControlGroups = true;
-        ProtectKernelModules = true;
-        RestrictAddressFamilies = "AF_UNIX AF_NETLINK AF_INET AF_INET6";
-        RestrictNamespaces = true;
-        RestrictRealtime = true;
-        MemoryDenyWriteExecute = true;
+        # PrivateTmp = true;
+        # ProtectSystem = "strict";
+        # ProtectHome = true;
+        # NoNewPrivileges = true;
+        # ProtectKernelTunables = true;
+        # ProtectControlGroups = true;
+        # ProtectKernelModules = true;
+        # RestrictAddressFamilies = "AF_UNIX AF_NETLINK AF_INET AF_INET6";
+        # RestrictNamespaces = true;
+        # RestrictRealtime = true;
+        # MemoryDenyWriteExecute = true;
 
         # Allow access to input devices
         DeviceAllow = "/dev/input/event*";
