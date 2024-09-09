@@ -9,7 +9,9 @@
 #include <time.h>
 
 #define INPUT_DEVICE "/dev/input/by-id/usb-Razer_Razer_Naga_V2_Pro-if02-event-kbd"
+#define INPUT_DEVICE2 "/dev/input/by-id/usb-Razer_Razer_Naga_V2_Pro-if01-event-kbd"
 #define MAX_CMD_LENGTH 256
+#define MAX_FDS 2
 
 // Map Linux input event codes to wtype key names
 const char* get_wtype_key_name(int code) {
@@ -76,28 +78,91 @@ void send_key_with_win(int code, int value) {
 }
 
 int main() {
-    int fd = open(INPUT_DEVICE, O_RDONLY);
-    if (fd < 0) {
-        perror("Failed to open input device");
+    int fds[MAX_FDS];
+    fd_set readfds;
+    struct input_event ev;
+    int max_fd = -1;
+
+    // Open INPUT_DEVICE
+    fds[0] = open(INPUT_DEVICE, O_RDONLY);
+    if (fds[0] < 0) {
+        perror("Failed to open INPUT_DEVICE");
         return 1;
     }
+    ioctl(fds[0], EVIOCGRAB, 1);
 
-	ioctl(fd, EVIOCGRAB, 1);// Give application exclusive control over side buttons.
+    // Open INPUT_DEVICE2
+    fds[1] = open(INPUT_DEVICE2, O_RDONLY);
+    if (fds[1] < 0) {
+        perror("Failed to open INPUT_DEVICE2");
+        close(fds[0]);
+        return 1;
+    }
+    ioctl(fds[1], EVIOCGRAB, 1);
 
-    printf("Starting Razer Naga Key Modifier. Logging all key events...\n");
+    // Find the maximum file descriptor
+    for (int i = 0; i < MAX_FDS; i++) {
+        if (fds[i] > max_fd) {
+            max_fd = fds[i];
+        }
+    }
 
-    struct input_event ev;
+    printf("Starting Razer Naga Key Modifier. Logging all key events from both devices...\n");
+
     while (1) {
-        if (read(fd, &ev, sizeof(ev)) < sizeof(ev)) {
-            perror("Error reading input event");
+        FD_ZERO(&readfds);
+        for (int i = 0; i < MAX_FDS; i++) {
+            FD_SET(fds[i], &readfds);
+        }
+
+        // Wait for input on any of the devices
+        if (select(max_fd + 1, &readfds, NULL, NULL, NULL) < 0) {
+            perror("Error in select");
             break;
         }
 
-        if (ev.type == EV_KEY) {
-            send_key_with_win(ev.code, ev.value);
+        // Check which device has input and read from it
+        for (int i = 0; i < MAX_FDS; i++) {
+            if (FD_ISSET(fds[i], &readfds)) {
+                if (read(fds[i], &ev, sizeof(ev)) < sizeof(ev)) {
+                    perror("Error reading input event");
+                    continue;
+                }
+                if (ev.type == EV_KEY) {
+                    send_key_with_win(ev.code, ev.value);
+                }
+            }
         }
     }
 
-    close(fd);
+    // Close all file descriptors
+    for (int i = 0; i < MAX_FDS; i++) {
+        close(fds[i]);
+    }
+
     return 0;
+    /* int fd = open(INPUT_DEVICE, O_RDONLY); */
+    /* if (fd < 0) { */
+    /*     perror("Failed to open input device"); */
+    /*     return 1; */
+    /* } */
+
+	/* ioctl(fd, EVIOCGRAB, 1);// Give application exclusive control over side buttons. */
+
+    /* printf("Starting Razer Naga Key Modifier. Logging all key events...\n"); */
+
+    /* struct input_event ev; */
+    /* while (1) { */
+    /*     if (read(fd, &ev, sizeof(ev)) < sizeof(ev)) { */
+    /*         perror("Error reading input event"); */
+    /*         break; */
+    /*     } */
+
+    /*     if (ev.type == EV_KEY) { */
+    /*         send_key_with_win(ev.code, ev.value); */
+    /*     } */
+    /* } */
+
+    /* close(fd); */
+    /* return 0; */
 }
