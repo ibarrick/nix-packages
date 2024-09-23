@@ -7,11 +7,19 @@
 #include <fcntl.h>
 #include <linux/input.h>
 #include <time.h>
+#include <errno.h>
 
-#define INPUT_DEVICE "/dev/input/by-id/usb-Razer_Razer_Naga_V2_Pro-if02-event-kbd"
-#define INPUT_DEVICE2 "/dev/input/by-id/usb-Razer_Razer_Naga_V2_Pro-if01-event-kbd"
+/* #define INPUT_DEVICE "/dev/input/by-id/usb-Razer_Razer_Naga_V2_Pro-if02-event-kbd" */
+/* #define INPUT_DEVICE2 "/dev/input/by-id/usb-Razer_Razer_Naga_V2_Pro-if01-event-kbd" */
 #define MAX_CMD_LENGTH 256
 #define MAX_FDS 2
+#define MAX_DEVICES 2
+#define RETRY_INTERVAL 1
+
+const char* INPUT_DEVICES[MAX_DEVICES] = {
+	"/dev/input/by-id/usb-Razer_Razer_Naga_V2_Pro-if02-event-kbd",
+	"/dev/input/by-id/usb-Razer_Razer_Naga_V2_Pro-if01-event-kbd"
+};
 
 // Map Linux input event codes to wtype key names
 const char* get_wtype_key_name(int code) {
@@ -77,92 +85,174 @@ void send_key_with_win(int code, int value) {
     system(cmd);
 }
 
+int open_device(const char* device_path) {
+    int fd = open(device_path, O_RDONLY | O_NONBLOCK);
+    if (fd >= 0) {
+        ioctl(fd, EVIOCGRAB, 1);
+        printf("Opened device: %s\n", device_path);
+    }
+    return fd;
+}
+
+void close_device(int* fd, const char* device_path) {
+    if (*fd != -1) {
+        close(*fd);
+        *fd = -1;
+        printf("Closed device: %s\n", device_path);
+    }
+}
+
 int main() {
-    int fds[MAX_FDS];
+    int fds[MAX_DEVICES];
     fd_set readfds;
     struct input_event ev;
     int max_fd = -1;
 
-    // Open INPUT_DEVICE
-    fds[0] = open(INPUT_DEVICE, O_RDONLY);
-    if (fds[0] < 0) {
-        perror("Failed to open INPUT_DEVICE");
-        return 1;
-    }
-    ioctl(fds[0], EVIOCGRAB, 1);
-
-    // Open INPUT_DEVICE2
-    fds[1] = open(INPUT_DEVICE2, O_RDONLY);
-    if (fds[1] < 0) {
-        perror("Failed to open INPUT_DEVICE2");
-        close(fds[0]);
-        return 1;
-    }
-    ioctl(fds[1], EVIOCGRAB, 1);
-
-    // Find the maximum file descriptor
-    for (int i = 0; i < MAX_FDS; i++) {
-        if (fds[i] > max_fd) {
-            max_fd = fds[i];
-        }
+    for (int i = 0; i < MAX_DEVICES; i++) {
+        fds[i] = -1;
     }
 
-    printf("Starting Razer Naga Key Modifier. Logging all key events from both devices...\n");
+    printf("Starting Mouse Input Handler. Waiting for devices...\n");
 
     while (1) {
-        FD_ZERO(&readfds);
-        for (int i = 0; i < MAX_FDS; i++) {
-            FD_SET(fds[i], &readfds);
+        // Try to open any unopened devices
+        for (int i = 0; i < MAX_DEVICES; i++) {
+            if (fds[i] == -1) {
+                fds[i] = open_device(INPUT_DEVICES[i]);
+            }
         }
 
-        // Wait for input on any of the devices
-        if (select(max_fd + 1, &readfds, NULL, NULL, NULL) < 0) {
+        // Recalculate max_fd
+        max_fd = -1;
+        for (int i = 0; i < MAX_DEVICES; i++) {
+            if (fds[i] > max_fd) {
+                max_fd = fds[i];
+            }
+        }
+
+        FD_ZERO(&readfds);
+        for (int i = 0; i < MAX_DEVICES; i++) {
+            if (fds[i] != -1) {
+                FD_SET(fds[i], &readfds);
+            }
+        }
+
+        // Wait for input on any of the open devices
+        struct timeval tv = {RETRY_INTERVAL, 0}; // Set timeout for select
+        int select_result = select(max_fd + 1, &readfds, NULL, NULL, &tv);
+
+        if (select_result < 0) {
             perror("Error in select");
             break;
+        } else if (select_result == 0) {
+            // Timeout occurred, loop back to try opening devices again
+            continue;
         }
 
         // Check which device has input and read from it
-        for (int i = 0; i < MAX_FDS; i++) {
-            if (FD_ISSET(fds[i], &readfds)) {
-                if (read(fds[i], &ev, sizeof(ev)) < sizeof(ev)) {
-                    perror("Error reading input event");
+        for (int i = 0; i < MAX_DEVICES; i++) {
+            if (fds[i] != -1 && FD_ISSET(fds[i], &readfds)) {
+                ssize_t bytes_read = read(fds[i], &ev, sizeof(ev));
+                if (bytes_read == -1) {
+                    if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                        // No data available, this is expected with non-blocking I/O
+                        continue;
+                    } else {
+                        // Real error occurred, close the device
+                        perror("Error reading input event");
+                        close_device(&fds[i], INPUT_DEVICES[i]);
+                        continue;
+                    }
+                } else if (bytes_read != sizeof(ev)) {
+                    // Partial read, should not happen for evdev
+                    fprintf(stderr, "Partial read from device %s\n", INPUT_DEVICES[i]);
                     continue;
                 }
-                if (ev.type == EV_KEY) {
+
+                // Process the event
+                if (ev.type == EV_SYN) {
+                    printf("Received EV_SYN event from device %s\n", INPUT_DEVICES[i]);
+                    /* // Consider reopening all devices when we receive a SYN event */
+                    /* for (int j = 0; j < MAX_DEVICES; j++) { */
+                    /*     close_device(&fds[j], INPUT_DEVICES[j]); */
+                    /* } */
+                    /* break; // Exit the for loop to reopen all devices */
+                } else if (ev.type == EV_KEY) {
+                    printf("Received key event from device %s: code=%d, value=%d\n", 
+                           INPUT_DEVICES[i], ev.code, ev.value);
                     send_key_with_win(ev.code, ev.value);
                 }
             }
         }
     }
 
-    // Close all file descriptors
-    for (int i = 0; i < MAX_FDS; i++) {
-        close(fds[i]);
+    // Close all open file descriptors
+    for (int i = 0; i < MAX_DEVICES; i++) {
+        close_device(&fds[i], INPUT_DEVICES[i]);
     }
 
     return 0;
-    /* int fd = open(INPUT_DEVICE, O_RDONLY); */
-    /* if (fd < 0) { */
-    /*     perror("Failed to open input device"); */
+    /* int fds[MAX_FDS]; */
+    /* fd_set readfds; */
+    /* struct input_event ev; */
+    /* int max_fd = -1; */
+
+    /* // Open INPUT_DEVICE */
+    /* fds[0] = open(INPUT_DEVICE, O_RDONLY); */
+    /* if (fds[0] < 0) { */
+    /*     perror("Failed to open INPUT_DEVICE"); */
     /*     return 1; */
     /* } */
+    /* ioctl(fds[0], EVIOCGRAB, 1); */
 
-	/* ioctl(fd, EVIOCGRAB, 1);// Give application exclusive control over side buttons. */
+    /* // Open INPUT_DEVICE2 */
+    /* fds[1] = open(INPUT_DEVICE2, O_RDONLY); */
+    /* if (fds[1] < 0) { */
+    /*     perror("Failed to open INPUT_DEVICE2"); */
+    /*     close(fds[0]); */
+    /*     return 1; */
+    /* } */
+    /* ioctl(fds[1], EVIOCGRAB, 1); */
 
-    /* printf("Starting Razer Naga Key Modifier. Logging all key events...\n"); */
+    /* // Find the maximum file descriptor */
+    /* for (int i = 0; i < MAX_FDS; i++) { */
+    /*     if (fds[i] > max_fd) { */
+    /*         max_fd = fds[i]; */
+    /*     } */
+    /* } */
 
-    /* struct input_event ev; */
+    /* printf("Starting Razer Naga Key Modifier. Logging all key events from both devices...\n"); */
+
     /* while (1) { */
-    /*     if (read(fd, &ev, sizeof(ev)) < sizeof(ev)) { */
-    /*         perror("Error reading input event"); */
+    /*     FD_ZERO(&readfds); */
+    /*     for (int i = 0; i < MAX_FDS; i++) { */
+    /*         FD_SET(fds[i], &readfds); */
+    /*     } */
+
+    /*     // Wait for input on any of the devices */
+    /*     if (select(max_fd + 1, &readfds, NULL, NULL, NULL) < 0) { */
+    /*         perror("Error in select"); */
     /*         break; */
     /*     } */
 
-    /*     if (ev.type == EV_KEY) { */
-    /*         send_key_with_win(ev.code, ev.value); */
+    /*     // Check which device has input and read from it */
+    /*     for (int i = 0; i < MAX_FDS; i++) { */
+    /*         if (FD_ISSET(fds[i], &readfds)) { */
+    /*             if (read(fds[i], &ev, sizeof(ev)) < sizeof(ev)) { */
+    /*                 perror("Error reading input event"); */
+    /*                 continue; */
+    /*             } */
+    /*             if (ev.type == EV_KEY) { */
+    /*                 send_key_with_win(ev.code, ev.value); */
+    /*             } */
+    /*         } */
     /*     } */
     /* } */
 
-    /* close(fd); */
-    /* return 0; */
+    /* // Close all file descriptors */
+    /* for (int i = 0; i < MAX_FDS; i++) { */
+    /*     close(fds[i]); */
+    /* } */
+
+    return 0;
 }

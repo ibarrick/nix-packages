@@ -252,6 +252,8 @@ nnoremap <silent><Leader><Leader>w :HopWord<CR>
       usql = import ./usql { lib = pkgs.lib; fetchFromGitHub = pkgs.fetchFromGitHub; buildGoModule = pkgs.buildGoModule; unixODBC = pkgs.unixODBC; icu = pkgs.icu; };
 
       anytype = import ./anytype { lib = pkgs.lib; fetchurl = pkgs.fetchurl; appimageTools = pkgs.appimageTools; makeWrapper = pkgs.makeWrapper; };
+
+      jaspersoft-studio = pkgs.callPackage ./jasper { };
     };
 
     nixosModules.naga = import ./modules/naga.nix;
