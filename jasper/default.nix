@@ -18,7 +18,10 @@ stdenv.mkDerivation rec {
   pname = "jaspersoft-studio";
   version = "7.0.0";
 
-  src = ./js-studiocomm_7.0.0_linux_x86_64.tgz;
+  src = fetchurl {
+    url = "https://esterwind-public.s3.amazonaws.com/js-studiocomm_7.0.0_linux_x86_64.tgz";
+    hash = "sha256-5cDVWR7M8mQidjSX6UzZZqMeex9+1FHJxisJcZz/lfg=";
+  };
 
   nativeBuildInputs = [ makeWrapper patchelf autoPatchelfHook ];
 
