@@ -2,18 +2,20 @@
   description = "ibarrick Nix Packages";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; 
+  inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs }: {
-    packages.x86_64-linux = 
-    let
-      pkgs = import nixpkgs { system = "x86_64-linux"; config = { allowUnfree = true; }; };
-    in
-    {
-      hello = nixpkgs.legacyPackages.x86_64-linux.hello;
+  outputs = { self, nixpkgs, flake-utils }: 
+    flake-utils.lib.eachDefaultSystem (system:
+        let
+          pkgs = import nixpkgs { system = system; config = { allowUnfree = true; }; };
+        in
+        {
+            packages = {
+          hello = nixpkgs.legacyPackages.${system}.hello;
 
-      neovim = (pkgs.neovim.override {
-      configure = {
-        customRC = ''
+          neovim = (pkgs.neovim.override {
+          configure = {
+            customRC = ''
 syntax on
 set tabstop=4
 set shiftwidth=4
@@ -243,20 +245,19 @@ nnoremap <silent><Leader><Leader>w :HopWord<CR>
     };
     });
 
-      ghostpdl = import ./ghostpdl { stdenv = pkgs.stdenv; };
+          ghostpdl = import ./ghostpdl { stdenv = pkgs.stdenv; };
 
-      naga = import ./naga { stdenv = pkgs.stdenv; makeWrapper = pkgs.makeWrapper; lib = pkgs.lib; wtype = pkgs.wtype; };
-      
-      cdk8s = import ./cdk8s { inherit pkgs; stdenv = pkgs.stdenv; };
+          naga = import ./naga { stdenv = pkgs.stdenv; makeWrapper = pkgs.makeWrapper; lib = pkgs.lib; wtype = pkgs.wtype; };
+          
+          cdk8s = import ./cdk8s { inherit pkgs; stdenv = pkgs.stdenv; };
 
-      usql = import ./usql { lib = pkgs.lib; fetchFromGitHub = pkgs.fetchFromGitHub; buildGoModule = pkgs.buildGoModule; unixODBC = pkgs.unixODBC; icu = pkgs.icu; };
+          usql = import ./usql { lib = pkgs.lib; fetchFromGitHub = pkgs.fetchFromGitHub; buildGoModule = pkgs.buildGoModule; unixODBC = pkgs.unixODBC; icu = pkgs.icu; };
 
-      anytype = import ./anytype { lib = pkgs.lib; fetchurl = pkgs.fetchurl; appimageTools = pkgs.appimageTools; makeWrapper = pkgs.makeWrapper; };
+          anytype = import ./anytype { lib = pkgs.lib; fetchurl = pkgs.fetchurl; appimageTools = pkgs.appimageTools; makeWrapper = pkgs.makeWrapper; };
 
-      jaspersoft-studio = pkgs.callPackage ./jasper { };
-    };
+          jaspersoft-studio = pkgs.callPackage ./jasper { };
+      };
+      nixosModules.naga = import ./modules/naga.nix;
+  });
 
-    nixosModules.naga = import ./modules/naga.nix;
-
-  };
 }
