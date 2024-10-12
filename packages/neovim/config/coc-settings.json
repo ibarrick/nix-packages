@@ -1,0 +1,71 @@
+{
+	"snippets.textmateSnippetsRoots": [".vscode/"],
+	"snippets.priority": 1,
+	"snippets.extends": {
+		"typescript": ["javascript"]
+	},
+	"languageserver": {
+		"clojure-lsp": {
+			"command": "clojure-lsp",
+			"filetypes": ["clojure"],
+			"rootPatterns": ["project.clj"],
+			"additionalSchemes": ["jar", "zipfile"]
+		},
+		"terraform": {
+			"command": "terraform-lsp",
+			"filetypes": [
+				"terraform",
+				"tf"
+			],
+			"initializationOptions": {},
+			"settings": {}
+		},
+		"tsserver": {
+			"filetypes": [
+				"ts",
+				"tsx"
+			]
+		},
+		"nix": {
+			"command": "nil",
+			"filetypes": ["nix"],
+			"rootPatterns": ["flake.nix"]
+		}
+	},
+	"tsserver.useLocalTsdk": true,
+	"tsserver.log": "verbose",
+	"tsserver.enableTracing": true,
+	"tsserver.trace": {
+		"server": "verbose"
+	},
+	"tsserver.maxTsServerMemory": 8192,
+	"list.source.symbols.excludes": ["**/node_modules/**/*"],
+	"typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true,
+	"suggest.completionItemKindLabels": {
+			"method": "  ",
+			"function": "  ",
+			"variable": "[]",
+			"field": "  ",
+			"typeParameter": "<>",
+			"constant": "  ",
+			"class": " פּ ",
+			"interface": " 蘒",
+			"struct": "  ",
+			"event": "  ",
+			"operator": "  ",
+			"module": "  ",
+			"property": "  ",
+			"enum": " 練",
+			"reference": "  ",
+			"keyword": "  ",
+			"file": "  ",
+			"folder": " ﱮ ",
+			"color": "  ",
+			"unit": " 塞 ",
+			"snippet": "  ",
+			"text": "  ",
+			"constructor": "  ",
+			"value": "  ",
+			"enumMember": "  "
+  }
+}

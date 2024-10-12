@@ -1,0 +1,695 @@
+global !p
+def upperfirst(t):
+	if len(t) < 2:
+		return '' if len(t) < 1 else t.capitalize()
+	return t[0].capitalize() + t[1:]
+def lowerdash(t):
+	return '-'.join([ w.lower() for w in re.findall('[a-z]+|[A-Z]+[a-z]*', t) ])
+def camel_to_snake(name):
+    name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', name).lower()
+endglobal
+
+snippet ft
+<FormTextField
+	formProps={{
+		control,
+		name: '$1'
+	}}
+	label="$2"
+	helperText={errors?.$3?.message}
+/>
+endsnippet
+
+snippet fd
+<FormDateTextField
+	formProps={{
+		control,
+		name: $1
+	}}
+	label="$2"
+	helperText={errors?.$3?.message}
+/>
+endsnippet
+
+snippet fdp
+<FormDatePicker
+	formProps={{
+		name: '$1',
+		control
+	}}
+	label='$2'
+	onBlur={(_, valAsMoment) => {
+		setValue('$1', valAsMoment?.toDate() ?? null);
+	}}
+	onAccept={(val: Moment) => {
+		setValue('$1', val?.toDate());
+	}}
+/>
+endsnippet
+
+snippet fm
+<ModelFormAutocomplete
+	formProps={{
+		control,
+		name: $1
+	}}
+	helperText={errors?.$2?.message}
+	watch={$3}
+	setValue={$4}
+	searchProps={{
+		keyField: $5,
+		searchModel: $6
+	}}
+	renderInputParams={{
+		label: "$7",
+		name: $8
+	}}
+	getOptionLabel={$9}
+/>
+endsnippet
+
+snippet nfm
+<NumberFormat
+	value={$1}
+	displayType='text'
+	thousandSeparator={true}
+	prefix='$'
+	decimalScale={2}
+	fixedDecimalScale={true}
+/>
+endsnippet
+
+snippet fs
+<FormSwitch
+	formProps={{
+		control,
+		name: $1
+	}}
+	label="$2"
+/>
+endsnippet
+
+snippet fc
+<FormCheckbox
+	formProps={{
+		control,
+		name: $1
+	}}
+	label="$2"
+/>
+endsnippet
+
+snippet fg
+<FormGlAutocomplete
+	formProps={{
+		control,
+		name: '$1'
+	}}
+	options={ledgerAccounts}
+	renderInputParams={{
+		name: '$2',
+		label: '$3',
+		error: !!errors.$1,
+		helperText: errors?.$1?.message
+	}}
+/>
+endsnippet
+
+snippet fa
+<FormAutocomplete
+	formProps={{
+		control,
+		name: '$1'
+	}}
+	options={$2}
+	renderInputParams={{
+		name: '$3',
+		label: '$4',
+		error: !!errors.$1,
+		helperText: errors?.$1?.message
+	}}
+	onChange={(e, v) => {
+		setValue('$3', v ? \`${v.$5}\` : '');
+	}}
+	getOptionLabel={(option) => \`${option.$5}\`}
+/>
+endsnippet
+
+snippet fct
+<FormCurrencyTextField
+	formProps={{
+		name: '$1',
+		control
+	}}
+	label='$2'
+	decimalPlaces={2}
+	currencySymbol='$'
+/>
+endsnippet
+
+snippet aed
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { useState } from "react";
+import useSmartForm from "src/utils/hooks/smart-form";
+import yup from "src/utils/yup-extended";
+import { makeStyles } from "tss-react/mui";
+import { styles } from "src/utils/styles/styles";
+
+const useStyles = makeStyles()(() => ({
+	...styles
+}));
+
+function $1() {
+	const { classes, cx } = useStyles();
+    const [isOpen, setIsOpen] = useState(true);
+
+    const schema = yup.object().shape({
+		$3
+    });
+
+    const { handleSubmit } = useSmartForm({
+        schema: schema,
+        defaultValues: {
+
+        }
+    });
+
+    async function close() {
+
+    }
+
+    async function save() {
+
+        setIsOpen(false);
+    }
+
+    return (
+        <Dialog open={isOpen} TransitionProps={{ onExited: () => close() }} fullWidth={true}>
+            <DialogTitle>
+                $2
+            </DialogTitle>
+            <DialogContent>
+
+            </DialogContent>
+            <DialogActions className={cx(classes.row, classes.alignEnd)}>
+                <Button color={'inherit'} onClick={() => setIsOpen(false)}>
+                    Close
+                </Button>
+                <Button color={'primary'} onClick={handleSubmit(save)}>
+                    Save
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
+}
+
+export default $1;
+endsnippet
+
+snippet acd
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { useState } from "react";
+import useSmartForm from "src/utils/hooks/smart-form";
+import yup from "src/utils/yup-extended";
+import { makeStyles } from "tss-react/mui";
+import { styles } from "src/utils/styles/styles";
+
+const useStyles = makeStyles()(() => ({
+	...styles
+}));
+
+function $1({ onClose }) {
+	const { classes, cx } = useStyles();
+    const [isOpen, setIsOpen] = useState(true);
+
+    const schema = yup.object().shape({
+		$3
+    });
+
+    const { handleSubmit } = useSmartForm({
+        schema: schema,
+        defaultValues: {
+
+        }
+    });
+
+    async function close() {
+
+    }
+
+    async function save() {
+
+        setIsOpen(false);
+    }
+
+    return (
+        <Dialog open={isOpen} TransitionProps={{ onExited: () => close() }} fullWidth={true}>
+            <DialogTitle>
+                $2
+            </DialogTitle>
+            <DialogContent>
+
+            </DialogContent>
+            <DialogActions className={cx(classes.row, classes.alignEnd)}>
+                <Button color={'inherit'} onClick={() => setIsOpen(false)}>
+                    Close
+                </Button>
+                <Button color={'primary'} onClick={handleSubmit(save)}>
+                    Save
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
+}
+
+export default $1;
+endsnippet
+
+snippet dialog
+<Dialog open={isOpen} TransitionProps={{ onExited: () => close() }} fullWidth={true}>
+	<DialogTitle>
+		$1
+	</DialogTitle>
+	<DialogContent className={classes.column}>
+		$2
+	</DialogContent>
+	<DialogActions className={cx(classes.row, classes.alignEnd)}>
+		<Button color={'inherit'} onClick={() => setIsOpen(false)}>
+			Close
+		</Button>
+		<Button color={'primary'} onClick={handleSubmit(save)}>
+			Save
+		</Button>
+	</DialogActions>
+</Dialog>
+endsnippet
+
+snippet cardscreen
+<>
+	<Card className={cx(classes.column, 'flex')}>
+		<CardContent className={cx(classes.column, 'flex')}>
+			$1
+		</CardContent>
+	</Card>
+</>
+endsnippet		
+
+snippet ms
+const useStyles = makeStyles()(() => ({
+	...styles
+}));
+endsnippet
+
+snippet useS
+const [$1, set`!p snip.rv=upperfirst(t[1])`] = useState<$2>($3);
+endsnippet
+
+snippet classes
+const { classes, cx } = useStyles();
+endsnippet
+
+snippet useD
+const dispatch = useAppDispatch();
+endsnippet
+
+snippet useE
+useEffect(() => {
+	(async () => {
+		$1	
+	})()
+}, []);
+endsnippet
+
+snippet usm
+const $1 = useSelector((state: RootState) => state.modelsStore.$2);
+endsnippet
+
+snippet schema
+const schema = yup.object().shape({
+	$1
+});
+endsnippet
+
+snippet ssr
+yup.string().max($1, maxLengthError($1)).required(requiredError())
+endsnippet
+
+snippet ss
+yup.string().max($1, maxLengthError($1))
+endsnippet
+
+snippet so
+yup.object().nullable()
+endsnippet
+
+snippet sor
+yup.object().nullable().required(requiredError())
+endsnippet
+
+snippet sn
+yup.number().typeError(numberTypeError()).moreThan(0, moreThanError(0))
+endsnippet
+
+snippet snr
+yup.number().typeError(numberTypeError()).moreThan(0, moreThanError(0)).required(requiredError())
+endsnippet
+
+snippet sdr
+yup.date().required(requiredError()).nullable().typeError(dateTypeError())
+endsnippet
+
+snippet usf
+const { handleSubmit, reset, formState: { errors }, control } = useSmartForm({
+	schema: schema,
+	defaultValues: {
+		$1
+	}
+});
+endsnippet
+
+snippet ufa
+const {
+	fields: $1,
+	control: $1Control,
+	append: append`!p snip.rv=upperfirst(t[1])`,
+	remove: remove`!p snip.rv=upperfirst(t[1])`,
+	getItemValues: get`!p snip.rv=upperfirst(t[1])`Value,
+	setItemValue: set`!p snip.rv=upperfirst(t[1])`Value,
+	errors: $1Errors,
+	watchArrayField: watch`!p snip.rv=upperfirst(t[1])`Field
+} = useFieldArray({
+	name: '$1',
+	control,
+	idField: 'tempId',
+});
+
+function add`!p snip.rv=upperfirst(t[1])`() {
+	append`!p snip.rv=upperfirst(t[1])`({ tempId: uuidv4() });
+}
+
+if ($1.length === 0) {
+	add`!p snip.rv=upperfirst(t[1])`();
+}
+endsnippet
+
+snippet cds
+{
+	field: '$1',
+	headerName: '$2',
+	flex: 1,
+	type: 'string'
+}
+endsnippet
+
+snippet cdb
+{
+	field: '$1',
+	headerName: '$2',
+	flex: 1,
+	type: 'boolean'
+}
+endsnippet
+
+snippet cdd
+{
+	field: '$1',
+	headerName: '$2',
+	flex: 1,
+	type: 'date',
+	valueGetter: (params) => params.value && moment(params.value).toDate(),
+	valueFormatter: (params) => formatDate(params.value)
+}
+endsnippet
+
+snippet cdm
+{
+	field: '$1',
+	headerName: '$2',
+	flex: 1,
+	type: 'number',
+	valueFormatter: (params) => formatCurrency(params.value)
+}
+endsnippet
+
+snippet cda
+{
+	field: ' ',
+	sortable: false,
+	disableColumnMenu: true,
+	headerAlign: 'center',
+	align: 'center',
+	renderHeader: (params) => {
+		return (
+			<>
+				$1
+			</>
+		);
+	},
+	renderCell: (params) => {
+		return (
+			<>
+				$2
+			</>
+		);
+	}
+}
+endsnippet
+
+snippet cdi
+{
+	field: '$1',
+	sortable: false,
+	disableColumnMenu: true,
+	headerName: '$2',
+	renderCell: (params) => {
+		return (
+			<>
+				$3
+			</>
+		);
+	}
+}
+endsnippet
+
+snippet ib
+<IconButton onClick={() => $1}>
+	$2
+</IconButton>
+endsnippet
+
+snippet dg
+<DataGridPremiumWrapper
+	columns={$1}
+	rows={$2}
+	disableRowSelectionOnClick={true}
+	loading={$3}
+	density={'compact'}
+/>
+endsnippet
+
+snippet a-ced
+function $1({ $2, onClose }: { $2?: $3, onClose: () => void }) {
+	const [isOpen, setIsOpen] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
+	const { classes, cx } = useStyles();
+
+	const schema = yup.object().shape({
+		$5
+	});
+
+	const { control, handleSubmit, formState: { errors } } = useSmartForm({
+		schema,
+		defaultValues: {
+			$6
+		}
+	});
+
+	async function save(data: SubmitType<typeof control>) {
+		setIsLoading(true);
+
+		setIsLoading(false);
+		setIsOpen(false);
+	}
+
+	return (
+		<Dialog open={isOpen} TransitionProps={{ onExited: () => onClose() }} fullWidth={true}>
+			<DialogTitle>
+				{ $2 ? 'Edit' : 'Create'} $4
+			</DialogTitle>
+			<DialogContent className={classes.column}>
+				$7
+			</DialogContent>
+			<DialogActions className={cx(classes.row, classes.alignEnd)}>
+				<Button color={'inherit'} onClick={() => setIsOpen(false)}>
+					Close
+				</Button>
+				<LoadingButton loading={isLoading} color={'primary'} onClick={handleSubmit(save)}>
+					Save
+				</LoadingButton>
+			</DialogActions>
+		</Dialog>
+	);
+}
+endsnippet
+
+snippet a-setuptable
+import {SubmitType} from "@Harris-Barrick-Software/use-form/dist/index.types";
+import {Add, Delete, Edit} from "@mui/icons-material";
+import {LoadingButton} from "@mui/lab";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from "@mui/material";
+import {GridColDef} from "@mui/x-data-grid-premium";
+import DataGridPremiumWrapper from 'src/utils/components/data-grid-premium-wrapper';
+import {useState, useEffect} from "react";
+import {useSelector} from "react-redux";
+import ConfirmationDialog from "src/utils/components/confirmation-dialog";
+import {$1} from "src/utils/data/models";
+import {createModelThunk, deleteModelThunk, fetchModelsThunk, updateModelThunk} from "src/utils/data/models-store";
+import {RootState, useAppDispatch} from "src/utils/data/store";
+import useSmartForm from "src/utils/hooks/smart-form";
+import {styles} from "src/utils/styles/styles";
+import yup from "src/utils/yup-extended";
+import {maxLengthError, requiredError} from "src/utils/yup-validation-helpers";
+import {makeStyles} from "tss-react/mui";
+
+const useStyles = makeStyles()(() => ({
+	...styles
+}));
+
+export default function $2() {
+	// const { classes, cx } = useStyles();
+	const $4ById = useSelector((state: RootState) => state.modelsStore.$3.byId);
+	const $4 = Object.values($4ById);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [$5, set`!p snip.rv=upperfirst(t[5])`] = useState<$1 | null>(null);
+	const [$6, set`!p snip.rv=upperfirst(t[6])`] = useState<$1 | null>(null);
+	const [isCreating, setIsCreating] = useState(false);
+	const dispatch = useAppDispatch();
+
+	useEffect(() => {
+		(async () => {
+			await dispatch(fetchModelsThunk({ modelName: '$3' }));
+			setIsLoading(false);
+		})()
+	}, []);
+
+	const columns: GridColDef<$1>[] = [
+		{
+			field: ' ',
+			sortable: false,
+			disableColumnMenu: true,
+			align: 'center',
+			headerAlign: 'center',
+			headerName: ' ',
+			renderCell: (params) => {
+				return (
+					<>
+						<IconButton onClick={() => set`!p snip.rv=upperfirst(t[5])`(params.row)}>
+							<Edit/>
+						</IconButton>
+						<IconButton onClick={() => set`!p snip.rv=upperfirst(t[6])`(params.row)}>
+							<Delete/>
+						</IconButton>
+					</>
+				);
+			},
+			renderHeader: (_) => {
+				return (
+					<IconButton color='primary' onClick={() => setIsCreating(true)}>
+						<Add/>
+					</IconButton>
+				);
+			}
+		}
+	];
+
+	async function delete`!p snip.rv=upperfirst(t[3])`() {
+		await dispatch(deleteModelThunk({ modelName: '$3', id: $6!.id }));
+	}
+
+	return (
+		<>
+			<DataGridPremiumWrapper
+				columns={columns}
+				rows={$4}
+				disableRowSelectionOnClick={true}
+				loading={isLoading}
+				density={'compact'}
+			/>
+			{isCreating &&
+				<$7 onClose={() => setIsCreating(false)}/>}
+			{!!$5 &&
+				<$7 $3={$5} onClose={() => set`!p snip.rv=upperfirst(t[5])`(null)}/>}
+			{!!$6 &&
+				<ConfirmationDialog
+					title="Delete $8"
+					message={\`Are you sure you want to delete ${$6.name}\`}
+					onClose={() => set`!p snip.rv=upperfirst(t[6])`(null)}
+					onConfirm={() => delete`!p snip.rv=upperfirst(t[3])`()}/>}
+		</>
+	);
+}
+
+function $7({ $3, onClose }: { $3?: $1, onClose: () => void }) {
+	const { classes, cx } = useStyles();
+	const [isOpen, setIsOpen] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
+	const dispatch = useAppDispatch();
+
+	const schema = yup.object().shape({
+		name: yup.string().max(255, maxLengthError(255)).required(requiredError())
+	});
+
+	const { handleSubmit, getError, control } = useSmartForm({
+		schema: schema,
+		defaultValues: {
+			$9
+		}
+	});
+
+	async function close() {
+		onClose();
+	}
+
+	async function save(data: SubmitType<typeof control>) {
+		setIsLoading(true);
+		if (!$3) {
+			await dispatch(createModelThunk({
+				modelName: '$3',
+				data: {
+					...data
+				}
+			}));
+		} else {
+			await dispatch(updateModelThunk({
+				modelName: '$3',
+				id: $3.id,
+				data: {
+					...data
+				}
+			}));
+		}
+		setIsLoading(false);
+		setIsOpen(false);
+	}
+
+	return (
+		<Dialog open={isOpen} TransitionProps={{ onExited: () => close() }} fullWidth={true}>
+			<DialogTitle>
+				{$3 ? 'Edit' : 'Create'} $8
+			</DialogTitle>
+			<DialogContent className={classes.column}>
+				
+			</DialogContent>
+			<DialogActions className={cx(classes.row, classes.alignEnd)}>
+				<Button color={'inherit'} onClick={() => setIsOpen(false)}>
+					Close
+				</Button>
+				<LoadingButton loading={isLoading} color={'primary'} onClick={handleSubmit(save)}>
+					Save
+				</LoadingButton>
+			</DialogActions>
+		</Dialog>
+	);
+}
+endsnippet

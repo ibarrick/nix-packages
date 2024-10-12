@@ -1,0 +1,164 @@
+global !p
+def upperfirst(t):
+    if len(t) < 2:
+        return '' if len(t) < 1 else t.capitalize()
+    return t[0].capitalize() + t[1:]
+def lowerdash(t):
+    return '-'.join([ w.lower() for w in re.findall('[a-z]+|[A-Z]+[a-z]*', t) ])
+def camel_to_snake(name):
+    name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', name).lower()
+def dash_to_capital(name):
+	name = ' '.join(word.title() for word in name.split('-'))
+	return name
+def dash_to_camel(name):
+    name = re.sub('(.)([A-Z][a-z]+)', r'\1-\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1-\2', name).lower()
+endglobal
+
+
+snippet dr
+(defreport
+  :report-name $1
+  :title $2
+  :extras-fn (fn [params tenant]
+               (let [ts (domain/tenant-settings tenant)]
+                 (-> params
+                     (assoc :orientation :landscape)
+                     (assoc :title (:employerName ts))
+                     (assoc :subtitle $2))))
+  :query-fn (fn [params tenant]
+              (db/$3 params {:connection (db/connection tenant)})))
+endsnippet
+
+snippet dm
+(ns aurantium-server.models.$1
+  (:require [aurantium-server.models.defmodel :as dm]))
+
+(dm/defmodel
+  :name $2
+  :humanName "$3"
+  :tableName "$4"
+  :auditEnabled $5
+  :searchEnabled $6
+  :realtimeUpdateEnabled $7
+  :archiveEnabled $8
+  :fields [$9]
+  :relationships [$10])
+endsnippet
+
+snippet bdm
+(ns bloom.models.$1
+  (:require [bloom.models.defmodel :as dm]))
+
+(dm/defmodel
+  :name $2
+  :humanName "$3"
+  :tableName "$4"
+  :auditEnabled $5
+  :searchEnabled $6
+  :realtimeUpdateEnabled $7
+  :archiveEnabled $8
+  :fields [$9]
+  :relationships [$10])
+endsnippet
+
+
+snippet pk "defmodel primarykey" i
+{:name :id
+ :primaryKey true
+ :type :int
+ :sqlType "bigint"
+ :columnName "id"}
+endsnippet
+
+snippet dmi "defmodel int" i
+{:name :$1
+ :sqlType "bigint"
+ :type :int
+ :columnName "`!p snip.rv=camel_to_snake(t[1])`"}
+endsnippet
+
+snippet dmin "defmodel int nullable" i
+{:name :$1
+ :sqlType "bigint"
+ :type :int
+ :sqlNullable true
+ :columnName "`!p snip.rv=camel_to_snake(t[1])`"}
+endsnippet
+
+snippet dms "defmodel string" i
+{:name :$1
+ :sqlType "varchar($2)"
+ :type :string
+ :columnName "`!p snip.rv=camel_to_snake(t[1])`"}
+endsnippet
+
+snippet dmd "defmodel date" i
+{:name :$1
+ :sqlType "date"
+ :type :date
+ :columnName "`!p snip.rv=camel_to_snake(t[1])`"}
+endsnippet
+
+snippet dmm "defmodel money" i
+{:name :$1
+ :sqlType "decimal(20,2)"
+ :type :money
+ :columnName "`!p snip.rv=camel_to_snake(t[1])`"}
+endsnippet
+
+snippet dmb "defmodel boolean" i
+{:name :$1
+ :sqlType "tinyint(1)"
+ :type :boolean
+ :columnName "`!p snip.rv=camel_to_snake(t[1])`"}
+endsnippet
+
+snippet bt "defmodel belongsTo" i
+{:name :$1
+ :type :belongsTo
+ :model :$2
+ :foreignKey :$3
+ :inverseKey :$4}
+endsnippet
+
+snippet hm "defmodel hasMany" i
+{:name :$1
+ :type :oneToMany
+ :model :$2
+ :foreignKey :$3
+ :inverseKey :$4}
+endsnippet
+
+snippet a-rbac "rbac namespace for aurantium" i
+(ns aurantium-server.rbac.$1
+  (:require [aurantium-server.rbac.core :as rbac]))
+
+(rbac/defpermissioncategory
+  :systemKey :`!p snip.rv=dash_to_camel(t[1])`
+  :name "`!p snip.rv=dash_to_capital(t[1])`")
+endsnippet
+
+snippet dp "defpermissionset" i
+(defpermissionset
+  :category :$1
+  :systemKey :$2
+  :name "$3"
+  :description "$4"
+  :allowedUris #{$5}
+  :screens #{$6}
+  :models {$7})
+endsnippet
+
+snippet dpm "defmodelpermissions" i
+(rbac/defmodelpermissions
+  :category :$1
+  :modelName :$2
+  :screens #{$3}
+  :allowedOperations {:create {:requiredFields {}}
+  					  :read {:requiredFields {}}
+					  :update {:requiredFields {}}
+					  :delete {:requiredFields {}}}
+  :removeRelationships #{})
+endsnippet

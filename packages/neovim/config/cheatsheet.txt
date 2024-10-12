@@ -1,0 +1,17 @@
+## aurantium-snippets @snippets
+Setup table snippet | a-setuptable
+Create edit dialog component | a-ced
+
+## datagrid-snippets @snippets
+Datagrid | dg
+Icon Button | ib
+Custom cell column | cdi
+Actions column | cda
+Money column | cdm
+Date column | cdd
+Boolean column | cdb
+String column | cds
+
+## vim-mappings @mappings
+Open log buffer in horizontal split | <localleader>ls
+Open log buffer in vertical split | <localleader>lv
