@@ -1,35 +1,76 @@
 {
   description = "ibarrick Nix Packages";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; 
-  inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs = {
+    stable.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; 
 
-  outputs = { self, nixpkgs, flake-utils }: 
-    flake-utils.lib.eachDefaultSystem (system:
-        let
-          pkgs = import nixpkgs { system = system; config = { allowUnfree = true; }; };
-        in
-        {
-          packages = {
+    swww.url = "github:LGFae/swww";
+  };
 
-            neovim = pkgs.callPackage ./packages/neovim { };
+  outputs = { self, nixpkgs, stable, unstable, swww }: 
+    let
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
 
-            ghostpdl = pkgs.callPackage ./packages/ghostpdl { };
+      pkgsFor = system: import nixpkgs { 
+          inherit system; 
+          config.allowUnfree = true;
+      };
+      stablePkgsFor = system: import stable { 
+          inherit system; 
+          config.allowUnfree = true;
+      };
 
-            naga = pkgs.callPackage ./packages/naga { };
-            
-            cdk8s = pkgs.callPackage ./packages/cdk8s { };
+      mkCustomPackages = system:
+        let pkgs = pkgsFor system;
+        in {
+          neovim = pkgs.callPackage ./packages/neovim { };
 
-            usql = pkgs.callPackage ./packages/usql { };
+          ghostpdl = pkgs.callPackage ./packages/ghostpdl { };
 
-            anytype = pkgs.callPackage ./packages/anytype { };
+          naga = pkgs.callPackage ./packages/naga { };
 
-            jaspersoft-studio = pkgs.callPackage ./jasper { };
+          cdk8s = pkgs.callPackage ./packages/cdk8s { };
+
+          usql = pkgs.callPackage ./packages/usql { };
+
+          anytype = pkgs.callPackage ./packages/anytype { };
+
+          jaspersoft-studio = pkgs.callPackage ./jasper { };
         };
 
-        nixosModules.naga = import ./modules/naga.nix;
-      
-      }
-  );
+    in {
+
+      packages = forAllSystems mkCustomPackages;
+
+      nixosModules = {
+        dotfiles = ./modules/dotfiles.nix;
+      };
+
+      nixosConfigurations = {
+
+          # Desktop
+          nixos = stable.lib.nixosSystem {
+              system = "x86_64-linux";
+
+              modules = [
+                  ./lib/base-system.nix
+                  ./lib/gui-system.nix
+                  ./machines/desktop.nix
+              ];
+
+              specialArgs = {
+                  username = "ian";
+                  inherit swww;
+                  pkgs = stablePkgsFor "x86_64-linux";
+                  unstablePkgs = pkgsFor "x86_64-linux";
+                  customPackages = self.packages.x86_64-linux;
+                  customModules = self.nixosModules;
+              };
+          };
+
+      };
+    };
 
 }
