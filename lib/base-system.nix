@@ -51,6 +51,14 @@
         text = builtins.readFile ../dotfiles/profiles.clj;
         target = ".lein/profiles.clj";
       };
+      gitconfig = {
+        text = ''
+          [user]
+	email = "ian@servisuite.com"
+          name = "Ian Barrick"
+        '';
+        target = ".config/git/config";
+      };
     };
   };
 
