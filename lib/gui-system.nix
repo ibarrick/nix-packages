@@ -67,7 +67,7 @@
     user = username;
     files = {
       hyprland = {
-        text = builtins.readFile ../dotfiles/hyprland.conf;;
+        text = builtins.readFile ../dotfiles/hyprland.conf;
         target = ".config/hypr/hyprland.conf";
       };
       hyprlock = {
