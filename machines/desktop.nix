@@ -43,7 +43,13 @@
   };
   hardware.opengl.enable = true;
 
-  networking.hostname = "nixos";
+  networking.hostName = "nixos";
+
+  users.users.ian = {
+    isNormalUser = true;
+    packages = [ ];
+    extraGroups = [ "wheel" "plugdev" "input" "docker" "networkmanager" "libvirtd" ];
+  };
 
 
   # for CPC stuff
@@ -52,5 +58,7 @@
   environment.systemPackages = with pkgs; [
     unixODBCDrivers.msodbcsql17 unixODBC libiodbc
   ];
+
+  system.stateVersion = "20.09";
 
 }

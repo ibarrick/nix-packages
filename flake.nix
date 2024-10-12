@@ -8,7 +8,7 @@
     swww.url = "github:LGFae/swww";
   };
 
-  outputs = { self, nixpkgs, stable, unstable, swww }: 
+  outputs = { self, nixpkgs, stable, swww }: 
     let
       supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
@@ -66,7 +66,6 @@
                   pkgs = stablePkgsFor "x86_64-linux";
                   unstablePkgs = pkgsFor "x86_64-linux";
                   customPackages = self.packages.x86_64-linux;
-                  customModules = self.nixosModules;
               };
           };
 

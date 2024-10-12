@@ -1,9 +1,12 @@
-{ pkgs, username, swww, naga, unstablePkgs, customModules, ... }:
+{ pkgs, username, swww, customPackages, unstablePkgs, ... }:
 {
 
   imports = [
-    customModules
+    ../modules/dotfiles.nix
   ];
+
+  # convenience for networking
+  networking.networkmanager.enable = true;
 
   xdg.portal = {
     enable = true;
@@ -44,6 +47,8 @@
 
   services.gnome.gnome-keyring.enable = true;
 
+  services.flatpak.enable = true;
+
   programs.hyprland = {
     enable = true;
     package = unstablePkgs.hyprland;
@@ -54,13 +59,28 @@
     package = unstablePkgs.hyprlock;
   };
 
+  # Peripheral stuff
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
+
   environment.systemPackages = with pkgs; [
     # wayland tools
     wofi waybar swww.packages.${system}.swww customPackages.naga xdg-desktop-portal-gtk
 
     # Misc 
     gnome.gnome-settings-daemon gsettings-desktop-schemas
+
+    alacritty
   ];
+
+  fonts.packages = with pkgs; [
+    (nerdfonts.override {
+      fonts = [
+        "FiraCode"
+      ];
+    })
+  ];
+
 
   custom.dotfiles = {
     enable = true;

@@ -11,6 +11,8 @@
 
   services.sshd.enable = true;
   services.tailscale.enable = true;
+  services.mullvad-vpn.enable = true;
+  services.avahi.enable = true;
 
   programs.gnupg.agent.enable = true;
   programs.ssh.startAgent = true;
@@ -30,6 +32,7 @@
 
     # neovim
     customPackages.neovim
+    powerline-fonts
   ];
 
   custom.dotfiles = {

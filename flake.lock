@@ -52,8 +52,7 @@
       "inputs": {
         "nixpkgs": "nixpkgs",
         "stable": "stable",
-        "swww": "swww",
-        "unstable": "unstable"
+        "swww": "swww"
       }
     },
     "stable": {
@@ -105,20 +104,6 @@
         "owner": "nix-systems",
         "repo": "default",
         "type": "github"
-      }
-    },
-    "unstable": {
-      "locked": {
-        "lastModified": 1728768054,
-        "narHash": "sha256-eDVWVreO1e1CN5V1Oq0aI449ESEyJcu7OtZeZ2zZ434=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "b1ea4a36d6f1bb62734bce3483994df69910e6d9",
-        "type": "github"
-      },
-      "original": {
-        "id": "unstable",
-        "type": "indirect"
       }
     },
     "utils": {
