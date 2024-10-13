@@ -22,6 +22,15 @@
           config.allowUnfree = true;
       };
 
+      specialArgsFor = system: {
+        username = "ian";
+        inherit swww;
+        pkgs = stablePkgsFor system;
+        unstablePkgs = pkgsFor system;
+        customPackages = self.packages.${system};
+      };
+
+
       mkCustomPackages = system:
         let pkgs = pkgsFor system;
         in {
@@ -60,13 +69,22 @@
                   ./machines/desktop.nix
               ];
 
-              specialArgs = {
-                  username = "ian";
-                  inherit swww;
-                  pkgs = stablePkgsFor "x86_64-linux";
-                  unstablePkgs = pkgsFor "x86_64-linux";
-                  customPackages = self.packages.x86_64-linux;
-              };
+              specialArgs = specialArgsFor "x86_64-linux";
+          };
+
+          # Live USB
+          usb = stable.lib.nixosSystem {
+            system = "x86_64-linux";
+
+            modules = [
+              ./lib/base-system.nix
+              ./lib/gui-system.nix
+              "${stable}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+              ./machines/usb.nix
+            ];
+
+            specialArgs = specialArgsFor "x86_64-linux";
+
           };
 
       };

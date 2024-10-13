@@ -98,6 +98,21 @@
         text = builtins.readFile ../dotfiles/alacritty.toml;
         target = ".config/alacritty/alacritty.toml";
       };
+      waybar1 = {
+        text = builtins.readFile ../dotfiles/waybar/config.jsonc;
+        target = ".config/waybar/config.jsonc";
+      };
+      waybar2 = {
+        text = builtins.readFile ../dotfiles/waybar/modules.jsonc;
+        target = ".config/waybar/modules.jsonc";
+      };
+      waybar3 = {
+        text = builtins.readFile ../dotfiles/waybar/style.css;
+        target = ".config/waybar/style.css";
+      };
+
+
+
     };
   };
 
