@@ -35,7 +35,7 @@
 
           usql = pkgs.callPackage ./packages/usql { };
 
-          anytype = pkgs.callPackage ./packages/anytype { };
+          anytype = pkgs.anytype;
 
           jaspersoft-studio = pkgs.callPackage ./jasper { };
         };

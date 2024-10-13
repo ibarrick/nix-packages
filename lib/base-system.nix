@@ -28,7 +28,7 @@
     awscli2 aws-vault lazygit git-lfs mycli git 
 
     # Applications
-    gthumb bitwarden restic 
+    gthumb bitwarden restic gpg-tui
 
     # neovim
     customPackages.neovim
