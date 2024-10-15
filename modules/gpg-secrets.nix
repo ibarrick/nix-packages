@@ -49,6 +49,14 @@ in
   };
 
   config = mkIf cfg.enable {
+    # Add udev rules to make YubiKey accessible to all users
+    services.udev.extraRules = ''
+      ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="1050", ATTRS{idProduct}=="0407", MODE="0666"
+    '';
+
+    # Ensure pcscd service is running
+    services.pcscd.enable = true;
+
     systemd.services.gpg-secrets = {
       description = "Decrypt GPG secrets";
       wantedBy = [ "multi-user.target" ];

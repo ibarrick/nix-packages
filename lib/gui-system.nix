@@ -71,6 +71,9 @@
     gnome.gnome-settings-daemon gsettings-desktop-schemas
 
     alacritty
+
+    # Applications
+    customPackages.anytype
   ];
 
   fonts.packages = with pkgs; [
@@ -111,7 +114,10 @@
         target = ".config/waybar/style.css";
       };
 
-
+      xdefaults = {
+        text = builtins.readFile ../dotfiles/Xdefaults;
+        target = ".Xdefaults";
+      };
 
     };
   };

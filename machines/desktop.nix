@@ -2,6 +2,7 @@
 {
   imports = [
     ../hardware-configuration/desktop-generated.nix
+    ../modules/gpg-secrets.nix
   ];
 
   boot.loader.efi.canTouchEfiVariables = true;
@@ -58,6 +59,27 @@
   environment.systemPackages = with pkgs; [
     unixODBCDrivers.msodbcsql17 unixODBC libiodbc
   ];
+
+  services.gpg-secrets = {
+    enable = true;
+    gpgHome = "/home/ian/.gnupg";
+    secrets = {
+      restic-pw = {
+        source = ../secrets/restic-pw.gpg;
+        destination = "/var/run/nix-secrets/restic-pw";
+        owner = "ian";
+        group = "users";
+        mode = "0400";
+      };
+      restic-env = {
+        source = ../secrets/restic-env.gpg;
+        destination = "/var/run/nix-secrets/restic-env";
+        owner = "ian";
+        group = "users";
+        mode = "0400";
+      };
+    };
+  };
 
   system.stateVersion = "20.09";
 

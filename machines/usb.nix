@@ -21,4 +21,22 @@
     };
   };
 
+  environment.systemPackages = with pkgs; [
+    unixtools.fsck wipe nwipe ntfs3g nmap parted gparted socat paperkey
+
+    testdisk safecopy sleuthkit ddrescue
+
+    # Exploitation
+    metasploit exploitdb social-engineer-toolkit sqlmap routersploit ropgadget pwntools pwndbg gef crackmapexec
+
+    # Bruteforcing
+    thc-hydra hashcat hashcat-utils pdfcrack rarcrack truecrack 
+
+    # Enumeration
+    wfuzz gobuster dirb snmpcheck nikto enum4linux-ng smbscan dnsenum 
+    termshark 
+
+    # MITM 
+    bettercap mitmproxy 
+  ];
 }

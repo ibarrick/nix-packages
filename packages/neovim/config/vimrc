@@ -102,6 +102,9 @@ endfunction
 nnoremap <silent> <C-l> :nohl<CR><C-l>
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 set termguicolors
+
+let g:GPGDefaultRecipients = ['ibarrick']
+
 lua <<EOF
 require("bufferline").setup{
   options = {

@@ -22,7 +22,7 @@
 
   environment.systemPackages = with pkgs; [
     # Utils
-    wget tmux lsof lesspass-cli rclone file utillinux jq glib exfat btop pasystray
+    wget tmux lsof lesspass-cli rclone file utillinux jq glib exfat btop pasystray usbutils
 
     # Devops
     awscli2 aws-vault lazygit git-lfs mycli git 

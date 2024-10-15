@@ -1,0 +1,17 @@
+[package]
+name = "bip39-file-converter"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "A tool to convert files to BIP39 mnemonics and back"
+license = "MIT"
+repository = "https://github.com/your-github-username/bip39-file-converter"
+
+[dependencies]
+bip39 = "2.1.0"
+sha2 = "0.10.6"
+clap = { version = "4.2.1", features = ["derive"] }
+
+[[bin]]
+name = "bip39"
+path = "bip39.rs"

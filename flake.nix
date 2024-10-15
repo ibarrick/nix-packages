@@ -47,6 +47,8 @@
           anytype = pkgs.anytype;
 
           jaspersoft-studio = pkgs.callPackage ./jasper { };
+
+          bip39 = pkgs.callPackage ./packages/bip39 {};
         };
 
     in {
