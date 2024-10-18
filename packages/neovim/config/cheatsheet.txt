@@ -1,6 +1,7 @@
 ## aurantium-snippets @snippets
 Setup table snippet | a-setuptable
 Create edit dialog component | a-ced
+Create rbac config | a-rbac
 
 ## datagrid-snippets @snippets
 Datagrid | dg
@@ -15,3 +16,7 @@ String column | cds
 ## vim-mappings @mappings
 Open log buffer in horizontal split | <localleader>ls
 Open log buffer in vertical split | <localleader>lv
+
+## ai @mappings
+Open AI Actions menu | <LocalLeader>ca
+Start code snippet prompt | <LocalLeader>cc

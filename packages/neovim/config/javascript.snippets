@@ -534,7 +534,6 @@ function $1({ $2, onClose }: { $2?: $3, onClose: () => void }) {
 endsnippet
 
 snippet a-setuptable
-import {SubmitType} from "@Harris-Barrick-Software/use-form/dist/index.types";
 import {Add, Delete, Edit} from "@mui/icons-material";
 import {LoadingButton} from "@mui/lab";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from "@mui/material";
@@ -546,7 +545,7 @@ import ConfirmationDialog from "src/utils/components/confirmation-dialog";
 import {$1} from "src/utils/data/models";
 import {createModelThunk, deleteModelThunk, fetchModelsThunk, updateModelThunk} from "src/utils/data/models-store";
 import {RootState, useAppDispatch} from "src/utils/data/store";
-import useSmartForm from "src/utils/hooks/smart-form";
+import { useIntegratedState, yupValidator } from "src/utils/hooks/state-management";
 import {styles} from "src/utils/styles/styles";
 import yup from "src/utils/yup-extended";
 import {maxLengthError, requiredError} from "src/utils/yup-validation-helpers";
@@ -630,6 +629,10 @@ export default function $2() {
 	);
 }
 
+type $9 = {
+	$10
+}
+
 function $7({ $3, onClose }: { $3?: $1, onClose: () => void }) {
 	const { classes, cx } = useStyles();
 	const [isOpen, setIsOpen] = useState(true);
@@ -637,21 +640,23 @@ function $7({ $3, onClose }: { $3?: $1, onClose: () => void }) {
 	const dispatch = useAppDispatch();
 
 	const schema = yup.object().shape({
-		name: yup.string().max(255, maxLengthError(255)).required(requiredError())
+		$12
 	});
 
-	const { handleSubmit, getError, control } = useSmartForm({
-		schema: schema,
-		defaultValues: {
-			$9
-		}
+	const state = useIntegratedState<$9>({
+		reducer: (s) => s,
+		idMaps: [],
+		initialState: {
+			$11
+		},
+		validator: yupValidator(schema)
 	});
 
 	async function close() {
 		onClose();
 	}
 
-	async function save(data: SubmitType<typeof control>) {
+	async function save(data: $9) {
 		setIsLoading(true);
 		if (!$3) {
 			await dispatch(createModelThunk({
@@ -685,7 +690,7 @@ function $7({ $3, onClose }: { $3?: $1, onClose: () => void }) {
 				<Button color={'inherit'} onClick={() => setIsOpen(false)}>
 					Close
 				</Button>
-				<LoadingButton loading={isLoading} color={'primary'} onClick={handleSubmit(save)}>
+				<LoadingButton loading={isLoading} color={'primary'} onClick={state.handleSubmit(save)}>
 					Save
 				</LoadingButton>
 			</DialogActions>

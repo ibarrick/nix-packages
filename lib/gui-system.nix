@@ -65,7 +65,7 @@
 
   environment.systemPackages = with pkgs; [
     # wayland tools
-    wofi waybar swww.packages.${system}.swww customPackages.naga xdg-desktop-portal-gtk
+    wofi waybar swww.packages.${system}.swww customPackages.naga xdg-desktop-portal-gtk wl-clipboard
 
     # Misc 
     gnome.gnome-settings-daemon gsettings-desktop-schemas

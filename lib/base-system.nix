@@ -22,13 +22,13 @@
 
   environment.systemPackages = with pkgs; [
     # Utils
-    wget tmux lsof lesspass-cli rclone file utillinux jq glib exfat btop pasystray usbutils
+    wget tmux lsof lesspass-cli rclone file utillinux jq glib exfat btop pasystray usbutils unzip
 
     # Devops
     awscli2 aws-vault lazygit git-lfs mycli git 
 
     # Applications
-    gthumb bitwarden restic gpg-tui
+    gthumb bitwarden restic gpg-tui bitwarden-cli
 
     # neovim
     customPackages.neovim
@@ -44,6 +44,9 @@
           export AWS_VAULT_BACKEND=file
           export BROWSER=chromium
           export EDITOR=vim
+          if [ ! -f /run/secrets/bw-session ]; then
+             bw login --raw > /run/secrets/bw-session
+          fi
         '';
         target = ".bashrc";
       };

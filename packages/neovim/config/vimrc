@@ -22,8 +22,6 @@ nnoremap <silent> <C-b> :Buffers<CR>
 nnoremap <silent> <Leader>gg :LazyGit<CR>
 nnoremap <silent> <C-y> :FloatermToggle build<CR>
 tnoremap <C-y> <C-\><C-n>:FloatermToggle build<CR>
-vnoremap <silent> <Leader>e :<C-u>ChatGPTEditWithInstructions<CR>
-nnoremap <silent> <Leader>e :ChatGPT<CR>
 set nocompatible
 filetype plugin on
 let g:clojure_maxlines = 1200
@@ -105,6 +103,8 @@ set termguicolors
 
 let g:GPGDefaultRecipients = ['ibarrick']
 
+nnoremap <silent> <LocalLeader>ca :CodeCompanionActions<CR>
+
 lua <<EOF
 require("bufferline").setup{
   options = {
@@ -122,30 +122,139 @@ require("hop").setup{
 
 }
 
-require('chatgpt').setup({
-    keymaps = {
-        accept = "<C-k>",
-    },
-    edit_with_instructions = {
-        keymaps = {
-            accept = "<C-k>",
-            use_output_as_input = "<C-l>"
-        }
-    },
-    chat = {
-        keymaps = {
-            accept = "<C-k>",
-        }
-    }
+
+local Input = require("nui.input")
+local event = require("nui.utils.autocmd").event
+
+local function prompt_input(opts)
+    opts = opts or {}
+    local result = nil
+    local input = Input({
+        position = opts.position or "50%",
+        size = {
+            width = opts.width or 20,
+        },
+        border = {
+            style = opts.border_style or "single",
+            text = {
+                top = opts.title or "[Input]",
+                top_align = "center",
+            },
+        },
+        win_options = {
+            winhighlight = opts.winhighlight or "Normal:Normal,FloatBorder:Normal",
+        },
+    }, {
+        prompt = opts.prompt or "> ",
+        default_value = opts.default_value or "",
+        on_close = function()
+            if opts.on_close then
+                opts.on_close()
+            end
+        end,
+        on_submit = function(value)
+            result = value
+            if opts.on_submit then
+                opts.on_submit(value)
+            end
+        end,
+    })
+
+    input:mount()
+
+    input:on(event.BufLeave, function()
+        input:unmount()
+    end)
+
+    -- Wait for the input to be submitted
+    vim.wait(10000, function()
+        return result ~= nil
+    end, 100)
+
+    return result
+end
+
+require("codecompanion").setup({
+	strategies = {
+		chat = {
+			adapter = "anthropic",
+		},
+		agent = {
+			adapter = "anthropic",
+		},
+		inline = {
+			adapter = "anthropic",
+		},
+	},
+	opts = {
+		log_level = "DEBUG",
+	},
+	display = {
+		action_palette = {
+			provider = "telescope",
+		},
+	},
+ 	adapters = {
+ 		anthropic = function()
+ 			return require("codecompanion.adapters").extend("anthropic", {
+ 				env = {
+					api_key = "cmd:bw get password claude-api --session $(cat /run/secrets/bw-session)"
+ 				},
+ 			})
+	    end,
+ 	},
+	prompt_library = {
+		["Code Snippet"] = {
+			strategy = "chat",
+			description = "Generate a code snippet with no additional markup or text",
+			opts = {
+				-- auto_submit = false,
+				short_name = "code",
+				mapping = "<LocalLeader>cc",
+				-- stop_context_insertion = true,
+			},
+			prompts = {
+				{
+						role = "system",
+						content = "You are a helpful progamming assistant, particularly skilled in Clojure, React, Typescript, and especially material-ui. Respond only in code (not language if it can be helped) and when asked to generate material-ui or react code, always use typescript. Please do not say ANYTHING except providing the code requested. If the query contains the word snippet, do not include any import statements, just the snippet. Please do not generate markdown or any other text that is not code.",
+				},
+				{
+						role = "user",
+						content = "",
+				},
+			},
+		},
+		["Inline Code Snippet"] = {
+			strategy = "inline",
+			description = "Generate a code snippet with no additional markup or text",
+			opts = {
+				-- auto_submit = false,
+				short_name = "code",
+				mapping = "<LocalLeader>ci",
+				-- stop_context_insertion = true,
+			},
+			prompts = {
+				{
+						role = "system",
+						content = "You are a helpful progamming assistant, particularly skilled in Clojure, React, Typescript, and especially material-ui. Respond only in code (not language if it can be helped) and when asked to generate material-ui or react code, always use typescript. Please do not say ANYTHING except providing the code requested. If the query contains the word snippet, do not include any import statements, just the snippet. Please do not generate markdown or any other text that is not code.",
+				},
+				{
+						role = "user",
+						content = "",
+				},
+			},
+		}
+	},
 })
-require('nvim-magic').setup({
-    backends = {
-        default = require('nvim-magic-openai').new({
-            api_endpoint = 'https://api.openai.com/v1/engines/text-davinci-003/completions',
-        }),
-    },
-    use_default_keymap = true
+
+vim.api.nvim_set_keymap("n", "<LocalLeader>cc", "", {
+  callback = function()
+    require("codecompanion").prompt("code")
+  end,
+  noremap = true,
+  silent = true,
 })
+
 require("cheatsheet").setup({
     -- Whether to show bundled cheatsheets
 

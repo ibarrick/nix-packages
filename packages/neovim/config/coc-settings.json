@@ -1,9 +1,10 @@
 {
-	"snippets.textmateSnippetsRoots": [".vscode/"],
 	"snippets.priority": 1,
 	"snippets.extends": {
 		"typescript": ["javascript"]
 	},
+	"snippets.ultisnips.enable": true,
+	"snippets.snipmate.enable": false,
 	"languageserver": {
 		"clojure-lsp": {
 			"command": "clojure-lsp",
