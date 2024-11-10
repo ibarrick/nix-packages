@@ -73,7 +73,7 @@
     alacritty
 
     # Applications
-    customPackages.anytype
+    customPackages.anytype qalculate-gtk
   ];
 
   fonts.packages = with pkgs; [

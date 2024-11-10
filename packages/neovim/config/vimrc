@@ -200,6 +200,9 @@ require("codecompanion").setup({
  				env = {
 					api_key = "cmd:bw get password claude-api --session $(cat /run/secrets/bw-session)"
  				},
+				parameters = {
+					model = "claude-3-5-sonnet-latest",
+				}
  			})
 	    end,
  	},
@@ -254,6 +257,27 @@ vim.api.nvim_set_keymap("n", "<LocalLeader>cc", "", {
   noremap = true,
   silent = true,
 })
+
+require("dbee").setup({
+	sources = {
+      require("dbee.sources").MemorySource:new({
+        {
+          name = "deacom",
+          type = "mssql",
+		  url = "sqlserver://{{ bw get username Deacom --session $(cat /run/secrets/bw-session) }}:{{ bw get password Deacom --session $(cat /run/secrets/bw-session) }}@localhost",
+        },
+      }),
+	}
+})
+
+vim.api.nvim_set_keymap("n", "<LocalLeader>db", "", {
+  callback = function()
+    require("dbee").open()
+  end,
+  noremap = true,
+  silent = true,
+})
+
 
 require("cheatsheet").setup({
     -- Whether to show bundled cheatsheets

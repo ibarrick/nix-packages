@@ -20,3 +20,8 @@ Open log buffer in vertical split | <localleader>lv
 ## ai @mappings
 Open AI Actions menu | <LocalLeader>ca
 Start code snippet prompt | <LocalLeader>cc
+
+## form-snippets @snippets
+Autocomplete column | cdsma
+Textfield column | cdsm
+Checkbox column | cdbm

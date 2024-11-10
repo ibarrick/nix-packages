@@ -22,10 +22,10 @@
 
   environment.systemPackages = with pkgs; [
     # Utils
-    wget tmux lsof lesspass-cli rclone file utillinux jq glib exfat btop pasystray usbutils unzip
+    wget tmux lsof lesspass-cli rclone file utillinux jq glib exfat btop pasystray usbutils unzip git-annex
 
     # Devops
-    awscli2 aws-vault lazygit git-lfs mycli git 
+    awscli2 aws-vault lazygit git-lfs mycli git smug zprint
 
     # Applications
     gthumb bitwarden restic gpg-tui bitwarden-cli
@@ -43,9 +43,9 @@
         text = ''
           export AWS_VAULT_BACKEND=file
           export BROWSER=chromium
-          export EDITOR=vim
+          export EDITOR=nvim
           if [ ! -f /run/secrets/bw-session ]; then
-             bw login --raw > /run/secrets/bw-session
+             bw unlock --raw > /run/secrets/bw-session
           fi
         '';
         target = ".bashrc";
@@ -53,6 +53,10 @@
       profiles = {
         text = builtins.readFile ../dotfiles/profiles.clj;
         target = ".lein/profiles.clj";
+      };
+      tmux = {
+        text = builtins.readFile ../dotfiles/tmux.conf;
+        target = ".tmux.conf";
       };
       gitconfig = {
         text = ''

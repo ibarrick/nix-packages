@@ -159,6 +159,16 @@ let
               sha256 = "sha256-UiB05lSjiKWq3eGQln9zMkNVzf3n1r7U3H1sVlrcz7k=";
             };
           })
+
+          (pkgs.vimUtils.buildVimPlugin {
+            name = "nvim-dbee";
+            src = pkgs.fetchFromGitHub {
+              repo = "nvim-dbee";
+              owner = "kndndrj";
+              rev = "21d2cc0844a16262bb6ea93ab3d0a0f20bd87853";
+              sha256 = "sha256-AOime4vG0NFcUvsd9Iw5SxR7WaeCsoCRU6h5+vSkt4M=";
+            };
+          })
              ];
         };
       };
